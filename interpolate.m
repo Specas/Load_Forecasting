@@ -1,0 +1,27 @@
+function new_data =interpolate(data)
+j=1;
+i=1;
+while(i<size(data,1))
+    if(data(i)==0)
+        count=0;
+        index=i;
+        while(data(index)==0)
+            count=count+1;
+            index=index+1;
+        end
+        temp_range=data(i+count,1:end)-data(i-1,1:end);
+        t=1;
+        while(t<=count)
+            new_data(j,:)=(t*temp_range/(count+1))+data(i-1,1:end);
+            i=i+1;
+            j=j+1;
+            t=t+1;
+        end
+    else
+        new_data(j,:)=data(i,:);
+        i=i+1;
+        j=j+1;
+    end
+end
+new_data(j,:)=data(end,1:end);
+end

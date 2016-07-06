@@ -1,0 +1,32 @@
+function new_data =remove_redundant_data(data)
+offset_data=[zeros(1,size(data,2));data];
+temp_data=[data;zeros(1,size(data,2))];
+difference_data=offset_data-temp_data;
+difference_data=sum(difference_data,2);
+difference_data=difference_data(1:end-1);
+j=1;
+i=1;
+while(i<size(data,1))
+    if(difference_data(i)~=0)
+        new_data(j,:)=data(i,1:end);
+        j=j+1;
+        i=i+1;
+    elseif(difference_data(i)==0)
+        count=0;
+        index=i;
+        while(difference_data(index)==0)
+            count=count+1;
+            index=index+1;
+        end
+        temp_range=data(i+count,1:end)-data(i-1,1:end);
+        t=1;
+        while(t<=count)
+            new_data(j,:)=(t*temp_range/(count+1))+data(i-1,1:end);
+            i=i+1;
+            j=j+1;
+            t=t+1;
+        end
+    end
+end
+new_data(j,:)=data(end,1:end);
+end
