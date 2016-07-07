@@ -1,5 +1,5 @@
 clear;
-label = 'R_output_full_interpolated_newdata.csv';
+label = 'output_final_data_new.csv';
 data=read_mixed_csv(label,',');
 time=datetime(data(2:end,1));
 power=str2double(data(2:end,2));
@@ -75,7 +75,7 @@ output_final = [time mean_final std_final energy_final];
 output_final = [output_label; output_final];
 
 %Saving of the output data in csv format.
-fid = fopen('output_mean_std_energy.csv', 'wt');
+fid = fopen('output_mean_std_energy_newdata.csv', 'wt');
 fprintf(fid, '%s,', output_final{1,1});
 fprintf(fid, '%s,', output_final{1,2});
 fprintf(fid, '%s,', output_final{1,3});
