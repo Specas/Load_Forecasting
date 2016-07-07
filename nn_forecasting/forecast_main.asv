@@ -137,13 +137,13 @@ ytrain_w_rand = y(tr_index, :);
 
 
 
-net = nn_train(xtrain_h_singleg, ytrain_h_single);
-yf = net(xtest_h_singleg')';
+net = nn_train(xtrain_h_single, ytrain_h_single);
+yf = net(xtest_h_single')';
 disp(calculate_mape(ytest_h_single, yf));
 
 figure();
 subplot(2, 1, 1);
-plot_forecasted_power(ytest_h_single, yf, test_hol_single);
+plot_forecasted_power(ytest_h_single, yf, test_work_single);
 
 %Second subplot
 train_work_single = randsample(list_working, length(list_working)-1);
@@ -167,12 +167,12 @@ xtest_w_singleg = gen_features(xtest_w_single);
 xtrain_h_singleg = gen_features(xtrain_h_single);
 xtest_h_singleg = gen_features(xtest_h_single);
 
-net = nn_train(xtrain_h_singleg, ytrain_h_single);
-yf = net(xtest_h_singleg')';
+net = nn_train(xtrain_h_single, ytrain_h_single);
+yf = net(xtest_h_single')';
 disp(calculate_mape(ytest_h_single, yf));
 
 
 subplot(2, 1, 2);
-plot_forecasted_power(ytest_h_single, yf, test_hol_single);
+plot_forecasted_power(ytest_h_single, yf, test_work_single);
 
 savefig('Holidays.fig');

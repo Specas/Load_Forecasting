@@ -5,6 +5,6 @@ function xx = gen_features(x)
     
     d = weekday(x);
     dv = datevec(x);
-    xx = [dv(:, 2) d dv(:, 4) dv(:, 5)];
+    xx = [dv(:, 1) dv(:, 2) d dv(:, 4) dv(:, 5)];
     
 end

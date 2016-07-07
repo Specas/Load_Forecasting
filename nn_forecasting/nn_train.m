@@ -5,12 +5,12 @@ function [net] = nn_train(x_train, power_train)
     x = x_train';
     t = power_train';
 
-    trainFcn = 'trainlm';  % Levenberg-Marquardt backpropagation.
-%     trainFcn = 'trainbr';
+%     trainFcn = 'trainlm';  % Levenberg-Marquardt backpropagation.
+    trainFcn = 'trainbr';
 %     trainFcn = 'trainscg';
 
     % Number of hidden layers and fit network
-    hiddenLayerSize = 30;
+    hiddenLayerSize = 10;
     net = fitnet(hiddenLayerSize,trainFcn);
 
     % Dada division for training, cross validation and testing sets
