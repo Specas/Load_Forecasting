@@ -20,14 +20,10 @@ list_dates = [];
 
 %Day of the week
 day_num = weekday(time);
+list_holidays = find_holidays(1000); %Energy threshold of 1000
+list_halfdays = find_halfdays(1000, 1500); %Threshold for halfdays
 
-% list_holidays = find_holidays(1000); %Energy threshold of 1000
-% list_halfdays = find_halfdays(1000, 1500); %Threshold for halfdays
-
-%Thresholds for new data
-list_holidays = find_holidays(1800); %Energy threshold of 1000
-list_halfdays = find_halfdays(1800, 2000); %Threshold for halfdays
-
+%T
 list_holidays = sort(list_holidays);
 list_halfdays = sort(list_halfdays);
 
