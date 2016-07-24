@@ -4,8 +4,8 @@ function holidays = find_holidays(energy_threshold)
     %If the energy consumption is less than a particular threshold value, 
     %We consider it to be a holiday
 
-%     data=read_mixed_csv('output_mean_std_energy_bms.csv', ',');
-    data=read_mixed_csv('output_mean_std_energy_newdata.csv', ',');
+    data=read_mixed_csv('output_mean_std_energy_bms.csv', ',');
+%     data=read_mixed_csv('output_mean_std_energy_pretest.csv', ',');
 
     time=datetime(data(2:end,1));
     energy=str2double(data(2:end,4));

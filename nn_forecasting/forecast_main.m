@@ -2,8 +2,8 @@ clear;
 clc;
 
 %Read pre-processed data
-data=read_mixed_csv('output_final_data_pretest.csv', ',');
-% data=read_mixed_csv('R_output_full_interpolated_newdata.csv', ',');
+% data=read_mixed_csv('output_final_data_pretest.csv', ',');
+data=read_mixed_csv('R_output_full_interpolated_newdata.csv', ',');
 
 %Extract datetime and power
 time=datetime(data(2:end,1));
@@ -21,12 +21,12 @@ list_dates = [];
 %Day of the week
 day_num = weekday(time);
 
-% list_holidays = find_holidays(1000); %Energy threshold of 1000
-% list_halfdays = find_halfdays(1000, 1500); %Threshold for halfdays
+list_holidays = find_holidays(1000); %Energy threshold of 1000
+list_halfdays = find_halfdays(1000, 1500); %Threshold for halfdays
 
 %Thresholds for new data
-list_holidays = find_holidays(1800); %Energy threshold of 1000
-list_halfdays = find_halfdays(1800, 2000); %Threshold for halfdays
+% list_holidays = find_holidays(2000); %Energy threshold of 1000
+% list_halfdays = find_halfdays(2000, 2500); %Threshold for halfdays
 
 list_holidays = sort(list_holidays);
 list_halfdays = sort(list_halfdays);
@@ -77,7 +77,7 @@ train_hol_single = sort(train_hol_single);
 test_work_single = sort(test_work_single);
 test_hol_single = sort(test_hol_single);
 
-test_work_single = list_working(6);
+test_work_single = list_working(10);
 train_work_single = setdiff(list_working, test_work_single);
 
 %Creating two lists of datetimes that contain only working and holidays
