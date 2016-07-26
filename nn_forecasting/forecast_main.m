@@ -48,22 +48,28 @@ list_dates = unique(list_dates);
 list_working = setdiff(list_dates, list_holidays);
 list_working = setdiff(list_working, list_halfdays);
 
-%Splitting into training and testing data 60-40
-train_len_hol = round(60*length(list_holidays)/100);
-train_len_work = round(60*length(list_working)/100);
 
-%Picking 60% of the dates randomly
-train_hol = randsample(list_holidays, train_len_hol);
-train_work = randsample(list_working, train_len_work);
 
-%Storing the other 40% 
-test_hol = setdiff(list_holidays, train_hol);
-test_work = setdiff(list_working, train_work);
 
-train_work = sort(train_work);
-train_hol = sort(train_hol);
-test_work = sort(test_work);
-test_hol = sort(test_hol);
+% %Splitting into training and testing data 60-40
+% train_len_hol = round(60*length(list_holidays)/100);
+% train_len_work = round(60*length(list_working)/100);
+% 
+% %Picking 60% of the dates randomly
+% train_hol = randsample(list_holidays, train_len_hol);
+% train_work = randsample(list_working, train_len_work);
+% 
+% %Storing the other 40% 
+% test_hol = setdiff(list_holidays, train_hol);
+% test_work = setdiff(list_working, train_work);
+% 
+% train_work = sort(train_work);
+% train_hol = sort(train_hol);
+% test_work = sort(test_work);
+% test_hol = sort(test_hol);
+
+
+
 
 %For the other model, we use all but one data for training
 train_work_single = randsample(list_working, length(list_working)-1);
@@ -77,7 +83,12 @@ train_hol_single = sort(train_hol_single);
 test_work_single = sort(test_work_single);
 test_hol_single = sort(test_hol_single);
 
-test_work_single = list_working(10);
+ind = 3;
+test_work_single = list_working(ind);
+%crbm parameters
+numframes = 96;
+fr = ind*96+1;
+
 train_work_single = setdiff(list_working, test_work_single);
 
 %Creating two lists of datetimes that contain only working and holidays
@@ -119,16 +130,28 @@ wtime = setdiff(time, htime);
 [xtrain_h_single, ytrain_h_single] = extract_time_power(time, power, htime, train_hol_single);
 [xtest_h_single, ytest_h_single] = extract_time_power(time, power, htime, test_hol_single);
 
+[xw, yw] = extract_time_power(time, power, wtime, list_working);
+
+%for crbm data
+% [xtrain_w_all, ytrain_w_all] = extract_time_power(time, power, wtime, list_working);
+% xtrain_w_allg = gen_features(xtrain_w_all);
+% crbm_data2 = [xtrain_w_allg ytrain_w_all];
+% save crbm_data2.mat crbm_data2
+
 %Generating feature arrays
 % xtrain_wg = gen_features(xtrain_w);
 % xtest_wg = gen_features(xtest_w);
 % xtrain_hg = gen_features(xtrain_h);
 % xtest_hg = gen_features(xtest_h);
 
+xtrain_w_singleg = gen_features(xtrain_w_single);
+xtest_w_singleg = gen_features(xtest_w_single);
+
 % xtrain_w_singleg = gen_features_week(xtrain_w_single);
 % xtest_w_singleg = gen_features_week_test(xtest_w_single);
-xtrain_w_singleg = gen_features_week(xtrain_w_single, ytrain_w_single);
-xtest_w_singleg = gen_features_week_test(xtrain_w_single, ytrain_w_single, list_working, xtest_w_single);
+
+% xtrain_w_singleg = gen_features_week(xtrain_w_single, ytrain_w_single);
+% xtest_w_singleg = gen_features_week_test(xtrain_w_single, ytrain_w_single, list_working, xtest_w_single);
 
 xtrain_h_singleg = gen_features(xtrain_h_single);
 xtest_h_singleg = gen_features(xtest_h_single);
@@ -156,27 +179,36 @@ xtest_h_singleg = gen_features(xtest_h_single);
 figure();
 
 % For Trees
-model = tree(xtrain_w_singleg, ytrain_w_single);
-yft = predict(model, xtest_w_singleg);
-err_tree = calculate_mape(ytest_w_single, yft);
-disp(err_tree);
+% model = tree(xtrain_w_singleg, ytrain_w_single);
+% yft = predict(model, xtest_w_singleg);
+% err_tree = calculate_mape(ytest_w_single, yft);
+% disp(err_tree);
 
 plot_actual_power(ytest_w_single, test_work_single);
 
-plot_forecasted_power(yft, test_work_single);
+% plot_forecasted_power(yft, test_work_single);
 
 
 
 %For NN
-net = nn_train(xtrain_w_singleg, ytrain_w_single);
-yfnn = net(xtest_w_singleg')';
-err_nn = calculate_mape(ytest_w_single, yfnn);
-disp(err_nn);
+% net = nn_train(xtrain_w_singleg, ytrain_w_single);
+% yfnn = net(xtest_w_singleg')';
+% err_nn = calculate_mape(ytest_w_single, yfnn);
+% disp(err_nn);
 
+
+
+%For crbm
+yfc = gen2(numframes, fr);
+err_c = calculate_mape(ytest_w_single, yfc);
+disp(err_c);
+
+plot_forecasted_power(yfc, test_work_single);
+legend('Actual', 'Forecasted');
 
 % subplot(2, 1, 1);
-plot_forecasted_power(yfnn, test_work_single);
-legend('Actual Power', ['Trees' char(10) strcat('Error = ', num2str(err_tree))], ['Neural Networks' char(10) strcat('Error = ', num2str(err_nn))]);
+% plot_forecasted_power(yfnn, test_work_single);
+% legend('Actual Power', ['Trees' char(10) strcat('Error = ', num2str(err_tree))], ['Neural Networks' char(10) strcat('Error = ', num2str(err_nn))]);
 
 % %Second subplot
 % train_work_single = randsample(list_working, length(list_working)-1);
